@@ -1,6 +1,6 @@
 {
   "name": "utf8-binary-cutter",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "description": "truncate UTF-8 strings to a given binary size",
   "main": "main.js",
   "scripts": {
