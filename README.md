@@ -5,10 +5,14 @@ utf8-binary-cutter
 
 A small node.js lib to truncate UTF-8 strings to a given binary size. Useful when dealing with old systems handling UTF-8 as ascii/latin-1, for ex. MySQL or Oracle database.
 
+Interesting reads :
+* [About MySQL, UTF-8 and saving headaches](http://melp.nl/2011/01/about-mysql-utf-8-and-saving-headaches/)
+* [Getting out of MySQL Character Set Hell](https://www.bluebox.net/insight/blog-article/getting-out-of-mysql-character-set-hell)
+
 Usage
 =====
 
-* Works on UTF-8 strings (javascript strings are UTF-8)
+* Works on UTF-8 strings (javascript strings are UTF-8 unless you're doing fancy things)
 * truncate so that final size is lower or equal than the given limit :
 
 ```javascript
@@ -18,15 +22,19 @@ var utf8String = 'abc☃☃☃'; // abc then 3 times the UTF-8 « snowman » cha
 
 console.log( Cutter.getBinarySize( utf8String ) );  // 1 + 1 + 1 + 3 + 3 + 3 = 12
 
-console.log( Cutter.truncateToBinarySize( utf8String, 20 ) );  'abc☃☃☃'  -> no change
-console.log( Cutter.truncateToBinarySize( utf8String, 12 ) );  'abc☃☃☃'  -> no change
-console.log( Cutter.truncateToBinarySize( utf8String, 11 ) );  'abc☃...' -> to avoid cutting utf8 chars, the two last snowmen have been removed. Final size = 9 bytes
-console.log( Cutter.truncateToBinarySize( utf8String, 10 ) );  'abc☃...' -> idem
-console.log( Cutter.truncateToBinarySize( utf8String,  9 ) );  'abc☃...' -> idem
-console.log( Cutter.truncateToBinarySize( utf8String,  8 ) );  'abc...'
+console.log( Cutter.truncateToBinarySize( utf8String, 20 ) ); // 'abc☃☃☃'  -> no change
+console.log( Cutter.truncateToBinarySize( utf8String, 12 ) ); // 'abc☃☃☃'  -> no change
+console.log( Cutter.truncateToBinarySize( utf8String, 11 ) ); // 'abc☃...' -> to avoid cutting utf8 chars,
+  // the two last snowmen had to be removed. Final size = 9 bytes
+console.log( Cutter.truncateToBinarySize( utf8String, 10 ) ); // 'abc☃...' -> idem
+console.log( Cutter.truncateToBinarySize( utf8String,  9 ) ); // 'abc☃...' -> idem
+console.log( Cutter.truncateToBinarySize( utf8String,  8 ) ); // 'abc...'
 ```
 
 * multiple truncations at the same time :
+  * NOTE : returns a new object.
+  * NOTE : iterates only on own properties
+  * NOTE : only truncated strings are copied, other members are shared with original object.
 
 ```javascript
 var Cutter = require('utf8-binary-cutter');
@@ -51,14 +59,15 @@ console.log( Cutter.truncateFieldsToBinarySize({
 }
 ```
 
-* callback when truncating (useful for logging)
+
+* callback when truncating (useful for logging) :
 ```
-I'm tired of writing doc. Read the source.
+I'm tired of writing doc. Read the source :-P
 ```
 
 Contributing
 ============
-* clone
+* clone repo
 * ensure your editor is decent and pick up the `.editorconfig` and `.jshintrc` files
 * `npm install`
 * `npm test`

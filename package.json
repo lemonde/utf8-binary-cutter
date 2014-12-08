@@ -1,6 +1,6 @@
 {
   "name": "utf8-binary-cutter",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "truncate UTF-8 strings to a given binary size",
   "main": "main.js",
   "scripts": {
@@ -21,13 +21,12 @@
   },
   "homepage": "https://github.com/lemonde/utf8-binary-cutter",
   "dependencies": {
-    "lodash": "^1.9.1"
+    "lodash": "2.4.1"
   },
   "devDependencies": {
-    "chai": "^1.9.1",
-    "lodash": "latest",
-    "mocha": "^1.20.1",
-    "sinon": "^1.10.2",
-    "sinon-chai": "^2.5.0"
+    "chai": "~1.10.0",
+    "mocha": "~2.0.1",
+    "sinon": "~1.12.1",
+    "sinon-chai": "~2.6.0"
   }
 }
