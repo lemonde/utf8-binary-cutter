@@ -2,6 +2,8 @@
 
 var chai = require('chai');
 var expect = chai.expect;
+var sinon = require('sinon');
+chai.use(require('sinon-chai'));
 
 var Utf8BinaryCutter = require('../main');
 
@@ -55,6 +57,18 @@ describe('UTF-8 binary cutter', function () {
       expect(Utf8BinaryCutter.truncateToBinarySize('☃☃☃☃', limit)) // 4x3 = 12 NOK
         .to.equals('☃☃...'); // only 2x3 can fit, +3 dots = 9 bytes, OK
     });
+
+    it('when truncating, should fire the callback if present', function () {
+      var limit = 10;
+
+      var callback = sinon.spy();
+
+      Utf8BinaryCutter.truncateToBinarySize('☃☃☃', limit, callback);
+      expect(callback).to.not.have.been.called;
+
+      Utf8BinaryCutter.truncateToBinarySize('☃☃☃☃', limit, callback);
+      expect(callback).to.have.been.calledOnce;
+    });
   });
 
   describe('#truncateFieldsToBinarySize', function() {
@@ -100,7 +114,27 @@ describe('UTF-8 binary cutter', function () {
       }, 'utf-8');
     });
 
+    it('when truncating, should fire the callback if present', function () {
+      var maxBinarySizes = {
+        title: 12,
+        text: 30
+      };
+
+      var callback = sinon.spy();
+
+      Utf8BinaryCutter.truncateFieldsToBinarySize({
+        title: 'I ❤ utf8-binary-cutter !',
+        text: '☃☃☃ A véry véry long title with UTF-8 ☃☃☃',
+        foo: 42
+      }, maxBinarySizes, callback);
+
+      expect(callback).to.have.been.calledTwice;
+      expect(callback).to.have.been.calledWith('title', 12);
+      expect(callback).to.have.been.calledWith('text', 30);
+    });
+
   });
+
 
   describe('documentation examples', function() {
     it('should be exact', function () {

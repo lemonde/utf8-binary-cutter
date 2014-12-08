@@ -51,11 +51,17 @@ console.log( Utf8BinaryCutter.truncateFieldsToBinarySize({
 }
 ```
 
+* callback when truncating (useful for logging)
+```
+I'm tired of writing doc. Read the source.
+```
+
 Contributing
 ============
 * clone
-* ensure your editor is decent and pick up the .editorconfig and .jshintrc files
+* ensure your editor is decent and pick up the `.editorconfig` and `.jshintrc` files
 * `npm install`
 * `npm test`
 * add tests, add features, send a PR
+
 Thanks !
