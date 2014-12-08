@@ -12,31 +12,31 @@ Usage
 * truncate so that final size is lower or equal than the given limit :
 
 ```javascript
-var Utf8BinaryCutter = require('../main');
+var Cutter = require('utf8-binary-cutter');
 
 var utf8String = 'abc☃☃☃'; // abc then 3 times the UTF-8 « snowman » char which takes 3 bytes
 
-console.log( Utf8BinaryCutter.getBinarySize( utf8String ) );  // 1 + 1 + 1 + 3 + 3 + 3 = 12
+console.log( Cutter.getBinarySize( utf8String ) );  // 1 + 1 + 1 + 3 + 3 + 3 = 12
 
-console.log( Utf8BinaryCutter.truncateToBinarySize( utf8String, 20 ) );  'abc☃☃☃'  -> no change
-console.log( Utf8BinaryCutter.truncateToBinarySize( utf8String, 12 ) );  'abc☃☃☃'  -> no change
-console.log( Utf8BinaryCutter.truncateToBinarySize( utf8String, 11 ) );  'abc☃...' -> to avoid cutting utf8 chars, the two last snowmen have been removed. Final size = 9 bytes
-console.log( Utf8BinaryCutter.truncateToBinarySize( utf8String, 10 ) );  'abc☃...' -> idem
-console.log( Utf8BinaryCutter.truncateToBinarySize( utf8String,  9 ) );  'abc☃...' -> idem
-console.log( Utf8BinaryCutter.truncateToBinarySize( utf8String,  8 ) );  'abc...'
+console.log( Cutter.truncateToBinarySize( utf8String, 20 ) );  'abc☃☃☃'  -> no change
+console.log( Cutter.truncateToBinarySize( utf8String, 12 ) );  'abc☃☃☃'  -> no change
+console.log( Cutter.truncateToBinarySize( utf8String, 11 ) );  'abc☃...' -> to avoid cutting utf8 chars, the two last snowmen have been removed. Final size = 9 bytes
+console.log( Cutter.truncateToBinarySize( utf8String, 10 ) );  'abc☃...' -> idem
+console.log( Cutter.truncateToBinarySize( utf8String,  9 ) );  'abc☃...' -> idem
+console.log( Cutter.truncateToBinarySize( utf8String,  8 ) );  'abc...'
 ```
 
 * multiple truncations at the same time :
 
 ```javascript
-var Utf8BinaryCutter = require('../main');
+var Cutter = require('utf8-binary-cutter');
 
 var maxBinarySizes = {
   title: 40,
   content: 200
 };
 
-console.log( Utf8BinaryCutter.truncateFieldsToBinarySize({
+console.log( Cutter.truncateFieldsToBinarySize({
     title: '☃☃☃ A véry véry long title with UTF-8 ☃☃☃',
     content: 'I ❤ utf8-binary-cutter !',
     foo: 42
