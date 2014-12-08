@@ -102,4 +102,40 @@ describe('UTF-8 binary cutter', function () {
 
   });
 
+  describe('documentation examples', function() {
+    it('should be exact', function () {
+      var utf8String = 'abc☃☃☃'; // abc then 3 times the UTF-8 « snowman » char which takes 3 bytes
+
+      expect(Utf8BinaryCutter.getBinarySize(utf8String)).to.equals(12);
+      expect(Utf8BinaryCutter.truncateToBinarySize( utf8String, 20 ))
+        .to.equals('abc☃☃☃');
+      expect(Utf8BinaryCutter.truncateToBinarySize( utf8String, 12 ))
+        .to.equals('abc☃☃☃');
+      expect(Utf8BinaryCutter.truncateToBinarySize( utf8String, 11 ))
+        .to.equals('abc☃...');
+      expect(Utf8BinaryCutter.truncateToBinarySize( utf8String, 10 ))
+        .to.equals('abc☃...');
+      expect(Utf8BinaryCutter.truncateToBinarySize( utf8String,  9 ))
+        .to.equals('abc☃...');
+      expect(Utf8BinaryCutter.truncateToBinarySize( utf8String,  8 ))
+        .to.equals('abc...');
+
+      var maxBinarySizes = {
+        title: 40,
+        content: 200
+      };
+
+      expect( Utf8BinaryCutter.truncateFieldsToBinarySize({
+        title: '☃☃☃ A véry véry long title with UTF-8 ☃☃☃',
+        content: 'I ❤ utf8-binary-cutter !',
+        foo: 42
+      }, maxBinarySizes))
+      .to.deep.equal({
+        title: '☃☃☃ A véry véry long title wi...',
+        content: 'I ❤ utf8-binary-cutter !',
+        foo: 42
+      });
+    });
+  });
+
 });
