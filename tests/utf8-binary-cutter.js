@@ -8,7 +8,7 @@ chai.use(require('sinon-chai'));
 var Utf8BinaryCutter = require('../main');
 
 
-describe('UTF-8 binary cutter', function () {
+describe.only('UTF-8 binary cutter', function () {
 
   describe('#getBinarySize', function() {
     it('should correctly compute binary size of strings', function () {
@@ -135,6 +135,54 @@ describe('UTF-8 binary cutter', function () {
 
   });
 
+  describe('#truncateToCharLength', function() {
+    it('should leave as is undersized strings', function () {
+      var limit = 10;
+
+      // pure ascii
+      expect(Utf8BinaryCutter.truncateToCharLength('', limit)).to.equals('');
+      expect(Utf8BinaryCutter.truncateToCharLength('123', limit)).to.equals('123');
+      expect(Utf8BinaryCutter.truncateToCharLength('1234567890', limit)).to.equals('1234567890');
+      // UTF-8 mixed
+      // REM âêîôûŷ chars take 2 bytes each
+      expect(Utf8BinaryCutter.truncateToCharLength('1234âêîôûŷ', limit)) // 10 chars
+        .to.equals('1234âêîôûŷ');
+      // REM : a snowman takes 3 bytes
+      expect(Utf8BinaryCutter.truncateToCharLength('☃☃☃☃☃☃☃☃☃☃', limit)) // 10 chars
+        .to.equals('☃☃☃☃☃☃☃☃☃☃');
+    });
+
+    it('should truncate oversized strings on correct chars boundaries', function () {
+      var limit = 10;
+
+      // pure ascii
+      expect(Utf8BinaryCutter.truncateToCharLength('12345678901', limit)).to.equals('1234567...');
+      expect(Utf8BinaryCutter.truncateToCharLength('123456789012', limit)).to.equals('1234567...');
+      expect(Utf8BinaryCutter.truncateToCharLength('1234567890123', limit)).to.equals('1234567...');
+      expect(Utf8BinaryCutter.truncateToCharLength('12345678901234', limit)).to.equals('1234567...');
+      // UTF-8 mixed
+      expect(Utf8BinaryCutter.truncateToCharLength('12345âêîôûŷ', limit)) // 11 chars
+        .to.equals('12345âê...');
+      expect(Utf8BinaryCutter.truncateToCharLength('☃☃☃☃☃☃☃☃☃☃☃', limit)) // 11 chars
+        .to.equals('☃☃☃☃☃☃☃...');
+      expect(Utf8BinaryCutter.truncateToCharLength('☃☃☃☃☃☃☃☃☃☃☃☃', limit)) // 12 chars
+        .to.equals('☃☃☃☃☃☃☃...');
+      expect(Utf8BinaryCutter.truncateToCharLength('☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃', limit)) // 15 chars
+        .to.equals('☃☃☃☃☃☃☃...');
+    });
+
+    it('when truncating, should fire the callback if present', function () {
+      var limit = 10;
+
+      var callback = sinon.spy();
+
+      Utf8BinaryCutter.truncateToCharLength('☃☃☃☃☃☃☃☃☃☃', limit, callback); // 10 chars
+      expect(callback).to.not.have.been.called;
+
+      Utf8BinaryCutter.truncateToCharLength('☃☃☃☃☃☃☃☃☃☃☃', limit, callback); // 11 chars
+      expect(callback).to.have.been.calledOnce;
+    });
+  });
 
   describe('documentation examples', function() {
     it('should be exact', function () {

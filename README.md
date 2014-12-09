@@ -11,16 +11,24 @@ Interesting reads :
 
 Usage
 =====
-
 * Works on UTF-8 strings (javascript strings are UTF-8 unless you're doing fancy things)
-* truncate so that final size is lower or equal than the given limit :
 
 ```javascript
 var Cutter = require('utf8-binary-cutter');
+```
 
+* `getBinarySize()` : returns the binary size of the given string
+
+```javascript
 var utf8String = 'abc☃☃☃'; // abc then 3 times the UTF-8 « snowman » char which takes 3 bytes
 
-console.log( Cutter.getBinarySize( utf8String ) );  // 1 + 1 + 1 + 3 + 3 + 3 = 12
+console.log( Cutter.getBinarySize( utf8String ) );  // 12 = 1 + 1 + 1 + 3 + 3 + 3
+```
+
+* `truncateToBinarySize()` truncate so that final binary size is lower or equal than the given limit :
+
+```javascript
+var utf8String = 'abc☃☃☃'; // abc then 3 times the UTF-8 « snowman » char which takes 3 bytes
 
 console.log( Cutter.truncateToBinarySize( utf8String, 20 ) ); // 'abc☃☃☃'  -> no change
 console.log( Cutter.truncateToBinarySize( utf8String, 12 ) ); // 'abc☃☃☃'  -> no change
@@ -31,14 +39,12 @@ console.log( Cutter.truncateToBinarySize( utf8String,  9 ) ); // 'abc☃...' -> 
 console.log( Cutter.truncateToBinarySize( utf8String,  8 ) ); // 'abc...'
 ```
 
-* multiple truncations at the same time :
+* `truncateFieldsToBinarySize()` multiple truncations at the same time :
   * NOTE : returns a new object.
   * NOTE : iterates only on own properties
   * NOTE : only truncated strings are copied, other members are shared with original object.
 
 ```javascript
-var Cutter = require('utf8-binary-cutter');
-
 var maxBinarySizes = {
   title: 40,
   content: 200
@@ -60,7 +66,18 @@ console.log( Cutter.truncateFieldsToBinarySize({
 ```
 
 
+* `truncateToCharLength()` normal truncate is also provided for convenience : truncate so that final char length is lower or equal than the given limit :
+
+```javascript
+var utf8String = 'abc☃☃☃'; // 6 chars
+
+console.log( Cutter.truncateToCharLength( utf8String, 10 ) ); // 'abc☃☃☃'  -> no change
+console.log( Cutter.truncateToBinarySize( utf8String,  6 ) ); // 'abc☃☃☃'  -> no change
+console.log( Cutter.truncateToBinarySize( utf8String,  5 ) ); // 'ab...'   -> 5 chars, ok
+```
+
 * callback when truncating (useful for logging) :
+
 ```
 I'm tired of writing doc. Read the source :-P
 ```
