@@ -76,10 +76,35 @@ console.log( Cutter.truncateToBinarySize( utf8String,  6 ) ); // 'abc☃☃☃' 
 console.log( Cutter.truncateToBinarySize( utf8String,  5 ) ); // 'ab...'   -> 5 chars, ok
 ```
 
-* callback when truncating (useful for logging) :
+* optional callback when truncating (useful for logging) :
 
 ```
-I'm tired of writing doc. Read the source :-P
+truncateToBinarySize(foo, 42, function(maxBinarySize, originalString, truncatedString) {
+  logger.warn(...
+});
+
+truncateToCharLength(foo, 42, function(maxCharLength, originalString, truncatedString) {
+  logger.warn(...
+});
+
+Cutter.truncateFieldsToBinarySize({
+    title: '☃☃☃ A véry véry long title with UTF-8 ☃☃☃',
+    content: 'I ❤ utf8-binary-cutter !',
+    foo: 42
+  },
+  // maxBinarySizes
+  {
+    title: 40,
+    content: 200
+  },
+  // callback
+  // will be called for each member truncated.
+  // 4th param : the key of the member being truncated.
+  function(maxCharLength, originalString, truncatedString, key) {
+    logger.warn(...
+  }
+);
+
 ```
 
 Contributing

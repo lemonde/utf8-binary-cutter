@@ -68,6 +68,7 @@ describe.only('UTF-8 binary cutter', function () {
 
       Utf8BinaryCutter.truncateToBinarySize('☃☃☃☃', limit, callback);
       expect(callback).to.have.been.calledOnce;
+      expect(callback).to.have.been.calledWith(10, '☃☃☃☃', '☃☃...');
     });
   });
 
@@ -129,8 +130,14 @@ describe.only('UTF-8 binary cutter', function () {
       }, maxBinarySizes, callback);
 
       expect(callback).to.have.been.calledTwice;
-      expect(callback).to.have.been.calledWith('title', 12);
-      expect(callback).to.have.been.calledWith('text', 30);
+      expect(callback).to.have.been.calledWith(
+        12,
+        'I ❤ utf8-binary-cutter !', 'I ❤ utf...',
+        'title');
+      expect(callback).to.have.been.calledWith(
+        30,
+        '☃☃☃ A véry véry long title with UTF-8 ☃☃☃', '☃☃☃ A véry véry lon...',
+        'text');
     });
 
   });
@@ -143,6 +150,7 @@ describe.only('UTF-8 binary cutter', function () {
       expect(Utf8BinaryCutter.truncateToCharLength('', limit)).to.equals('');
       expect(Utf8BinaryCutter.truncateToCharLength('123', limit)).to.equals('123');
       expect(Utf8BinaryCutter.truncateToCharLength('1234567890', limit)).to.equals('1234567890');
+
       // UTF-8 mixed
       // REM âêîôûŷ chars take 2 bytes each
       expect(Utf8BinaryCutter.truncateToCharLength('1234âêîôûŷ', limit)) // 10 chars
@@ -160,6 +168,7 @@ describe.only('UTF-8 binary cutter', function () {
       expect(Utf8BinaryCutter.truncateToCharLength('123456789012', limit)).to.equals('1234567...');
       expect(Utf8BinaryCutter.truncateToCharLength('1234567890123', limit)).to.equals('1234567...');
       expect(Utf8BinaryCutter.truncateToCharLength('12345678901234', limit)).to.equals('1234567...');
+
       // UTF-8 mixed
       expect(Utf8BinaryCutter.truncateToCharLength('12345âêîôûŷ', limit)) // 11 chars
         .to.equals('12345âê...');
@@ -181,6 +190,7 @@ describe.only('UTF-8 binary cutter', function () {
 
       Utf8BinaryCutter.truncateToCharLength('☃☃☃☃☃☃☃☃☃☃☃', limit, callback); // 11 chars
       expect(callback).to.have.been.calledOnce;
+      expect(callback).to.have.been.calledWith(10, '☃☃☃☃☃☃☃☃☃☃☃', '☃☃☃☃☃☃☃...');
     });
   });
 
