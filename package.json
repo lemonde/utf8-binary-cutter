@@ -21,12 +21,12 @@
   },
   "homepage": "https://github.com/lemonde/utf8-binary-cutter",
   "dependencies": {
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
-    "chai": "~1.10.0",
-    "mocha": "~2.0.1",
-    "sinon": "~1.12.1",
-    "sinon-chai": "~2.6.0"
+    "chai": "^4.2.0",
+    "mocha": "^6.2.1",
+    "sinon": "^7.5.0",
+    "sinon-chai": "^3.3.0"
   }
 }
